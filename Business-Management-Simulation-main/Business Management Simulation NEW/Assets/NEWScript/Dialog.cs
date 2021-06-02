@@ -35,6 +35,7 @@ public class Dialog : MonoBehaviour
     public AudioSource MaleFeedbackAudio;
     public AudioSource CorrectMusicAudio;
     public AudioSource WrongMusicAudio;
+    public AudioSource ButtonClickAudio;
 
     public int hasAnswered = 0;// no, 1  answer1, 2 answer2
 
@@ -86,6 +87,7 @@ public class Dialog : MonoBehaviour
     {
         //feedback.GetComponent<TMPro.TMP_Text>().text = feedbackAnswer1[index];
         //feedback.SetActive(true);
+        ButtonClickAudio.Play();
         FemaleThinkingAudio.Stop();
         MaleSpeechBubble.SetActive(false);
         answer1Button.SetActive(false);
@@ -106,6 +108,7 @@ public class Dialog : MonoBehaviour
     {
         //feedback.GetComponent<TMPro.TMP_Text>().text = feedbackAnswer2[index];
         //feedback.SetActive(true);
+        ButtonClickAudio.Play();
         FemaleThinkingAudio.Stop();
         MaleSpeechBubble.SetActive(false);
         answer1Button.SetActive(false);
@@ -155,6 +158,8 @@ public class Dialog : MonoBehaviour
 
     public void NextSentence()
     {
+        ButtonClickAudio.Play();
+        continueButton.SetActive(false);
         if(hasAnswered == 1)//clicking continue after female answers 1
         {
             MaleSpeechBubble.GetComponentInChildren<TMPro.TMP_Text>().text = feedbackAnswer1[index];
@@ -181,6 +186,12 @@ public class Dialog : MonoBehaviour
         }
         else //continue button is pressed after male finishes a sentence
         {
+            WrongMusicAudio.Stop();
+            MaleFeedbackAudio.Stop();
+            FemaleWrongAnswerAudio.Stop();
+            CorrectMusicAudio.Stop();
+            MaleFeedbackAudio.Stop();
+            FemaleCorrectAnswerAudio.Stop();
 
             //MaleSpeechBubble.SetActive(false);
             answer1Button.SetActive(false);
@@ -195,9 +206,15 @@ public class Dialog : MonoBehaviour
                 
                 StartCoroutine(TypeMale());
             }
-            continueButton.SetActive(false);
-        }     
-        
+            else
+            {
+                continueButton.SetActive(false);
+                FemaleSpeechBubble.SetActive(false);
+                MaleSpeechBubble.SetActive(false);
+                FemaleSpeaker.SetTrigger("startListening");
+                MaleSpeaker.SetTrigger("startListening");
+            }
+        }
         hasAnswered = 0;       
         FemaleSpeechBubble.SetActive(false);
     }
